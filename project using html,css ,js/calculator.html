@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="project using html,css,js/logo3.jpg.png" rel="icon">
+  <title>Simple Calculator  Made by Suryansh</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f9;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .calculator {
+      background: #fff;
+      padding: 20px 25px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      width: 320px;
+    }
+
+    .display {
+      width: 100%;
+      height: 50px;
+      background: #222;
+      color: #fff;
+      font-size: 2rem;
+      border-radius: 8px;
+      padding: 10px 15px;
+      text-align: right;
+      box-sizing: border-box;
+      user-select: none;
+      overflow-x: auto;
+    }
+
+    .buttons {
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+    }
+
+    button {
+      padding: 18px 0;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #e0e0e0;
+      transition: background 0.3s ease;
+      box-shadow: 0 4px #bcbcbc;
+      user-select: none;
+    }
+
+    button:active {
+      box-shadow: none;
+      transform: translateY(4px);
+    }
+
+    button.operator {
+      background: #f57c00;
+      color: white;
+      box-shadow: 0 4px #c46200;
+    }
+
+    button.operator:active {
+      box-shadow: none;
+      transform: translateY(4px);
+    }
+
+    button.equals {
+      background: #388e3c;
+      color: white;
+      grid-column: span 2;
+      box-shadow: 0 4px #2e7030;
+    }
+
+    button.equals:active {
+      box-shadow: none;
+      transform: translateY(4px);
+    }
+
+    button.clear {
+      background: #d32f2f;
+      color: white;
+      box-shadow: 0 4px #9a2424;
+    }
+
+    button.clear:active {
+      box-shadow: none;
+      transform: translateY(4px);
+    }
+
+    .footer {
+      margin-top: 20px;
+      font-size: 0.95rem;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="calculator">
+    <div id="display" class="display">0</div>
+    <div class="buttons">
+      <button class="clear" id="clear">C</button>
+      <button id="backspace">⌫</button>
+      <button class="operator" data-op="/">÷</button>
+      <button class="operator" data-op="*">×</button>
+
+      <button data-num="7">7</button>
+      <button data-num="8">8</button>
+      <button data-num="9">9</button>
+      <button class="operator" data-op="-">−</button>
+
+      <button data-num="4">4</button>
+      <button data-num="5">5</button>
+      <button data-num="6">6</button>
+      <button class="operator" data-op="+">+</button>
+
+      <button data-num="1">1</button>
+      <button data-num="2">2</button>
+      <button data-num="3">3</button>
+      <button class="equals" id="equals">=</button>
+
+      <button data-num="0" style="grid-column: span 2;">0</button>
+      <button data-num=".">.</button>
+    </div>
+  </div>
+
+  <div class="footer">
+    Made with ❤️ by <strong>Suryansh</strong>
+  </div>
+
+  <script>
+    const display = document.getElementById('display');
+    const buttons = document.querySelectorAll('button');
+    let currentInput = '';
+    let resetNext = false;
+
+    function updateDisplay() {
+      display.textContent = currentInput || '0';
+    }
+
+    function appendValue(value) {
+      if (resetNext) {
+        currentInput = '';
+        resetNext = false;
+      }
+      if (value === '.') {
+        const parts = currentInput.split(/[\+\-\*\/]/);
+        if (parts[parts.length - 1].includes('.')) return;
+      }
+      currentInput += value;
+      updateDisplay();
+    }
+
+    function appendOperator(op) {
+      if (!currentInput) return;
+      if (/[+\-*/]$/.test(currentInput)) {
+        currentInput = currentInput.slice(0, -1) + op;
+      } else {
+        currentInput += op;
+      }
+      updateDisplay();
+    }
+
+    function calculate() {
+      if (!currentInput) return;
+      if (/[+\-*/.]$/.test(currentInput)) {
+        currentInput = currentInput.slice(0, -1);
+      }
+      try {
+        let result = eval(currentInput);
+        if (!isFinite(result)) {
+          currentInput = 'Error: Division by zero';
+        } else {
+          currentInput = result.toString();
+        }
+      } catch (e) {
+        currentInput = 'Error';
+      }
+      updateDisplay();
+      resetNext = true;
+    }
+
+    function clearAll() {
+      currentInput = '';
+      updateDisplay();
+    }
+
+    function backspace() {
+      if (resetNext) {
+        currentInput = '';
+        resetNext = false;
+        updateDisplay();
+        return;
+      }
+      currentInput = currentInput.slice(0, -1);
+      updateDisplay();
+    }
+
+    buttons.forEach(button => {
+      if (button.hasAttribute('data-num')) {
+        button.addEventListener('click', () => {
+          appendValue(button.getAttribute('data-num'));
+        });
+      } else if (button.classList.contains('operator')) {
+        button.addEventListener('click', () => {
+          appendOperator(button.getAttribute('data-op'));
+        });
+      }
+    });
+
+    document.getElementById('equals').addEventListener('click', calculate);
+    document.getElementById('clear').addEventListener('click', clearAll);
+    document.getElementById('backspace').addEventListener('click', backspace);
+
+    window.addEventListener('keydown', e => {
+      if ((e.key >= '0' && e.key <= '9') || e.key === '.') {
+        appendValue(e.key);
+      } else if (['+', '-', '*', '/'].includes(e.key)) {
+        appendOperator(e.key);
+      } else if (e.key === 'Enter' || e.key === '=') {
+        e.preventDefault();
+        calculate();
+      } else if (e.key === 'Backspace') {
+        backspace();
+      } else if (e.key.toLowerCase() === 'c') {
+        clearAll();
+      }
+    });
+
+    updateDisplay();
+  </script>
+
+</body>
+</html>

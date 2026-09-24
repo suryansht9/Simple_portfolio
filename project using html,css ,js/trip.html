@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suryansh's Trip Budget Calculator</title>
+  <style>
+    :root {
+      --primary: #2980b9;
+      --bg-light: #f9f9f9;
+      --text-dark: #2c3e50;
+      --white: #fff;
+      --shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg-light);
+      color: var(--text-dark);
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: var(--primary);
+      color: var(--white);
+      padding: 20px;
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    footer {
+      background-color: var(--primary);
+      color: var(--white);
+      text-align: center;
+      padding: 15px;
+      position: relative;
+      bottom: 0;
+      width: 100%;
+      margin-top: 50px;
+      font-size: 0.9rem;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 30px auto;
+      background: var(--white);
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      margin-top: 20px;
+      font-weight: 600;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 25px;
+      background-color: var(--primary);
+      color: var(--white);
+      border: none;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #1c5980;
+    }
+
+    .result {
+      margin-top: 30px;
+      padding: 20px;
+      border-radius: 8px;
+      background: #e8f8f5;
+      color: #117864;
+      font-weight: bold;
+      line-height: 1.6;
+    }
+
+    .branding {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #999;
+    }
+
+    .branding span {
+      color: #333;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    🚗 Trip Budget Calculator by Suryansh
+  </header>
+
+  <div class="container">
+    <h2>Plan Your Travel Cost</h2>
+    <form id="tripForm">
+      <label for="fuelPrice">Fuel Price (per liter):</label>
+      <input type="number" id="fuelPrice" required />
+
+      <label for="foodCost">Estimated Food Cost:</label>
+      <input type="number" id="foodCost" required />
+
+      <label for="distance">Distance (in KM):</label>
+      <input type="number" id="distance" required />
+
+      <label for="mileage">Vehicle Mileage (KM per liter):</label>
+      <input type="number" id="mileage" required />
+
+      <label for="tolls">Toll Charges:</label>
+      <input type="number" id="tolls" required />
+
+      <button type="submit">Calculate Budget</button>
+    </form>
+
+    <div class="result" id="resultBox" style="display:none;"></div>
+
+    <div class="branding">
+      Built with ❤️ by <span>Suryansh</span> | Share this tool with friends!
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2025 Suryansh | Thank you for using this tool. Visit again!
+  </footer>
+
+  <script>
+    document.getElementById('tripForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const fuelPrice = parseFloat(document.getElementById('fuelPrice').value);
+      const foodCost = parseFloat(document.getElementById('foodCost').value);
+      const distance = parseFloat(document.getElementById('distance').value);
+      const mileage = parseFloat(document.getElementById('mileage').value);
+      const tolls = parseFloat(document.getElementById('tolls').value);
+
+      const isUSD = confirm("Do you want to see the result in USD? (Cancel for INR)");
+      const currency = isUSD ? "$" : "₹";
+
+      const fuelNeeded = distance / mileage;
+      const fuelCost = fuelNeeded * fuelPrice;
+      const totalCost = fuelCost + foodCost + tolls;
+
+      const resultHTML = `
+        Fuel Needed: ${fuelNeeded.toFixed(2)} liters<br>
+        Fuel Cost: ${currency}${fuelCost.toFixed(2)}<br>
+        Food Cost: ${currency}${foodCost.toFixed(2)}<br>
+        Toll Charges: ${currency}${tolls.toFixed(2)}<br><hr>
+        <strong>Total Trip Cost: ${currency}${totalCost.toFixed(2)}</strong>
+      `;
+
+      const resultBox = document.getElementById('resultBox');
+      resultBox.innerHTML = resultHTML;
+      resultBox.style.display = 'block';
+    });
+  </script>
+</body>
+</html>

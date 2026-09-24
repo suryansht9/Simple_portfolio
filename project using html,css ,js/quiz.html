@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suryansh's Quiz App</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f4f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+    header, footer {
+      background: #3498db;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      width: 100%;
+    }
+    .quiz-container {
+      background: white;
+      width: 400px;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      padding: 25px;
+      text-align: center;
+      margin-top: 20px;
+    }
+    h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+    .question {
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+    }
+    .answers {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    button.answer-btn {
+      padding: 12px;
+      font-size: 1rem;
+      border: 2px solid #3498db;
+      background: white;
+      color: #3498db;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    button.answer-btn:hover, button.answer-btn.selected {
+      background: #3498db;
+      color: white;
+    }
+    button#next-btn {
+      padding: 12px 25px;
+      font-size: 1rem;
+      border: none;
+      background: #2ecc71;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    button#next-btn:disabled {
+      background: #95d5a5;
+      cursor: default;
+    }
+    .score {
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: #2c3e50;
+      margin-bottom: 15px;
+    }
+    .branding {
+      margin-top: 15px;
+      font-size: 0.9rem;
+      color: #888;
+    }
+    footer {
+      font-size: 0.9rem;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    ✨ Quiz App by Suryansh
+  </header>
+
+  <div class="quiz-container">
+    <h2>Test Your Knowledge</h2>
+    <div id="quiz-content">
+      <div id="question" class="question"></div>
+      <div id="answers" class="answers"></div>
+      <button id="next-btn" disabled>Next</button>
+    </div>
+    <div id="result" style="display:none;">
+      <div class="score"></div>
+      <button id="restart-btn">Restart Quiz</button>
+    </div>
+    <div class="branding">Project built with ❤️ by <strong>Suryansh</strong></div>
+  </div>
+
+  <footer>
+    &copy; 2025 Suryansh | Thanks for playing!
+  </footer>
+
+  <script>
+    const quizData = [
+      {
+        question: "What is the capital of France?",
+        answers: ["Berlin", "Madrid", "Paris", "Rome"],
+        correct: 2
+      },
+      {
+        question: "Which planet is known as the Red Planet?",
+        answers: ["Earth", "Mars", "Jupiter", "Venus"],
+        correct: 1
+      },
+      {
+        question: "Who wrote 'Hamlet'?",
+        answers: ["Leo Tolstoy", "Mark Twain", "William Shakespeare", "Charles Dickens"],
+        correct: 2
+      },
+      {
+        question: "What is the boiling point of water at sea level?",
+        answers: ["100°C", "90°C", "80°C", "120°C"],
+        correct: 0
+      },
+      {
+        question: "Which language is used for web development?",
+        answers: ["Python", "JavaScript", "C++", "Java"],
+        correct: 1
+      }
+    ];
+
+    const questionEl = document.getElementById('question');
+    const answersEl = document.getElementById('answers');
+    const nextBtn = document.getElementById('next-btn');
+    const resultEl = document.getElementById('result');
+    const quizContentEl = document.getElementById('quiz-content');
+    const scoreEl = resultEl.querySelector('.score');
+    const restartBtn = document.getElementById('restart-btn');
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let selectedAnswerIndex = null;
+
+    function loadQuestion() {
+      selectedAnswerIndex = null;
+      nextBtn.disabled = true;
+      const currentQuestion = quizData[currentQuestionIndex];
+      questionEl.textContent = currentQuestion.question;
+      answersEl.innerHTML = '';
+      currentQuestion.answers.forEach((answer, index) => {
+        const btn = document.createElement('button');
+        btn.classList.add('answer-btn');
+        btn.textContent = answer;
+        btn.addEventListener('click', () => selectAnswer(index, btn));
+        answersEl.appendChild(btn);
+      });
+    }
+
+    function selectAnswer(index, btn) {
+      selectedAnswerIndex = index;
+      nextBtn.disabled = false;
+      document.querySelectorAll('.answer-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+    }
+
+    nextBtn.addEventListener('click', () => {
+      if (selectedAnswerIndex === quizData[currentQuestionIndex].correct) {
+        score++;
+      }
+      currentQuestionIndex++;
+      if (currentQuestionIndex < quizData.length) {
+        loadQuestion();
+      } else {
+        showResult();
+      }
+    });
+
+    function showResult() {
+      quizContentEl.style.display = 'none';
+      resultEl.style.display = 'block';
+      scoreEl.textContent = `Your score: ${score} / ${quizData.length}`;
+    }
+
+    restartBtn.addEventListener('click', () => {
+      currentQuestionIndex = 0;
+      score = 0;
+      quizContentEl.style.display = 'block';
+      resultEl.style.display = 'none';
+      loadQuestion();
+    });
+
+    loadQuestion();
+  </script>
+
+</body>
+</html>

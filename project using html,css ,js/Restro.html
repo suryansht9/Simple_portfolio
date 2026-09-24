@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Interactive Restaurant Experience with Animations</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #fff8f0;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  h1 {
+    text-align: center;
+    color: #b85c38;
+    margin-bottom: 20px;
+  }
+  .dialogue {
+    background: #f9f4ee;
+    border-left: 5px solid #b85c38;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    font-style: italic;
+    color: #7a3e21;
+    opacity: 0;
+    animation: fadeIn 1s forwards;
+  }
+  .hidden {
+    display: none !important;
+  }
+  .category-buttons {
+    text-align: center;
+    margin-bottom: 15px;
+  }
+  .category-buttons button {
+    background: #b85c38;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    margin: 0 5px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+  .category-buttons button:hover,
+  .category-buttons button.active {
+    background: #923d1f;
+  }
+  .menu-item {
+    background: #fff;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(184,92,56,0.15);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    opacity: 0;
+    animation: fadeIn 0.5s forwards;
+  }
+  .item-info {
+    max-width: 70%;
+  }
+  .item-name {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #7a3e21;
+    margin: 0 0 5px 0;
+  }
+  .item-desc {
+    font-size: 0.9rem;
+    color: #5c3a21;
+    margin: 0;
+  }
+  .item-price {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #b85c38;
+    min-width: 60px;
+    text-align: right;
+  }
+  .select-checkbox {
+    margin-left: 15px;
+    cursor: pointer;
+    transform: scale(1.2);
+  }
+  button {
+    background: #b85c38;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 20px;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+  }
+  button:hover {
+    background: #923d1f;
+  }
+  #order-summary {
+    background: #fff8f5;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(184,92,56,0.15);
+    margin-top: 20px;
+  }
+  #order-summary h3 {
+    color: #b85c38;
+    margin-top: 0;
+  }
+  #rating-section {
+    margin-top: 20px;
+    text-align: center;
+  }
+  #rating-section label {
+    font-weight: bold;
+    margin-right: 10px;
+  }
+  select, input[type="number"] {
+    padding: 8px;
+    font-size: 1rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+  #final-message {
+    margin-top: 20px;
+    background: #f9f4ee;
+    padding: 15px 20px;
+    border-left: 5px solid #b85c38;
+    border-radius: 5px;
+    font-style: italic;
+    color: #7a3e21;
+    text-align: center;
+    opacity: 0;
+    animation: fadeIn 2s forwards;
+  }
+  /* Fade in animation */
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+  /* Loading spinner */
+  .spinner {
+    margin: 20px auto;
+    width: 48px;
+    height: 48px;
+    border: 6px solid #b85c38;
+    border-top-color: #f9f4ee;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+</style>
+</head>
+<body>
+
+<h1>Delicious Bites - Interactive Experience</h1>
+
+<div id="dialogue" class="dialogue">
+  <p><strong>Waiter:</strong> Welcome! I am your waiter. May I take your order?</p>
+</div>
+
+<div id="menu-section">
+  <div class="category-buttons">
+    <button class="active" data-category="all">All</button>
+    <button data-category="starters">Starters</button>
+    <button data-category="main">Main Course</button>
+    <button data-category="desserts">Desserts</button>
+    <button data-category="drinks">Drinks</button>
+  </div>
+
+  <div id="menu-container"></div>
+
+  <button id="place-order-btn">Place Order</button>
+</div>
+
+<div id="preparation-section" class="hidden">
+  <div class="dialogue" id="preparation-dialogue">
+    <p><strong>Waiter:</strong> Thank you for your order! I will inform the chef to prepare your meal. Please wait.</p>
+  </div>
+  <div class="spinner"></div>
+</div>
+
+<div id="meal-served-section" class="hidden">
+  <div class="dialogue">
+    <p><strong>Waiter:</strong> Your meal is ready! Enjoy your food.</p>
+  </div>
+  <button id="pay-bill-btn">Pay Bill</button>
+</div>
+
+<div id="payment-section" class="hidden">
+  <div id="order-summary"></div>
+  <button id="pay-btn">Pay Now</button>
+</div>
+
+<div id="rating-section" class="hidden">
+  <label for="rating">Please rate your experience (1-5): </label>
+  <select id="rating">
+    <option value="" disabled selected>Select rating</option>
+    <option value="1">1 - Very Bad</option>
+    <option value="2">2 - Bad</option>
+    <option value="3">3 - Okay</option>
+    <option value="4">4 - Good</option>
+    <option value="5">5 - Excellent</option>
+  </select>
+  <button id="submit-rating-btn">Submit Rating</button>
+</div>
+
+<div id="final-message" class="hidden"></div>
+
+<!-- Sounds -->
+<audio id="order-sound" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQAAAAA="></audio>
+<audio id="payment-sound" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQAAAAA="></audio>
+
+<script>
+  const menuItems = [
+    { id: 1, name: "Bruschetta", description: "Grilled bread with tomato, basil & garlic", price: 6.99, category: "starters" },
+    { id: 2, name: "Caesar Salad", description: "Romaine lettuce, croutons, parmesan, caesar dressing", price: 7.99, category: "starters" },
+    { id: 3, name: "Margherita Pizza", description: "Classic pizza with fresh mozzarella & basil", price: 12.99, category: "main" },
+    { id: 4, name: "Spaghetti Carbonara", description: "Spaghetti with pancetta, eggs & parmesan", price: 14.99, category: "main" },
+    { id: 5, name: "Grilled Salmon", description: "Salmon fillet with lemon butter sauce", price: 18.50, category: "main" },
+    { id: 6, name: "Tiramisu", description: "Coffee-flavored Italian dessert", price: 6.50, category: "desserts" },
+    { id: 7, name: "Chocolate Lava Cake", description: "Warm chocolate cake with molten center", price: 7.00, category: "desserts" },
+    { id: 8, name: "Espresso", description: "Strong black coffee", price: 3.00, category: "drinks" },
+    { id: 9, name: "Lemonade", description: "Freshly squeezed lemonade", price: 4.00, category: "drinks" }
+  ];
+
+  const menuContainer = document.getElementById('menu-container');
+  const categoryButtons = document.querySelectorAll('.category-buttons button');
+  const placeOrderBtn = document.getElementById('place-order-btn');
+  const menuSection = document.getElementById('menu-section');
+  const preparationSection = document.getElementById('preparation-section');
+  const mealServedSection = document.getElementById('meal-served-section');
+  const paymentSection = document.getElementById('payment-section');
+  const ratingSection = document.getElementById('rating-section');
+  const finalMessage = document.getElementById('final-message');
+  const dialogue = document.getElementById('dialogue');
+  const orderSummary = document.getElementById('order-summary');
+  const payBillBtn = document.getElementById('pay-bill-btn');
+  const payBtn = document.getElementById('pay-btn');
+  const submitRatingBtn = document.getElementById('submit-rating-btn');
+  const ratingSelect = document.getElementById('rating');
+
+  // Sounds
+  const orderSound = document.getElementById('order-sound');
+  const paymentSound = document.getElementById('payment-sound');
+
+  let selectedItems = [];
+
+  function renderMenu(category = 'all') {
+    menuContainer.innerHTML = '';
+    let filteredItems = category === 'all' ? menuItems : menuItems.filter(item => item.category === category);
+    filteredItems.forEach(item => {
+      const itemDiv = document.createElement('div');
+      itemDiv.classList.add('menu-item');
+      itemDiv.innerHTML = `
+        <div class="item-info">
+          <p class="item-name">${item.name}</p>
+          <p class="item-desc">${item.description}</p>
+        </div>
+        <div>
+          <span class="item-price">$${item.price.toFixed(2)}</span>
+          <input type="checkbox" class="select-checkbox" data-id="${item.id}" aria-label="Select ${item.name}" />
+        </div>
+      `;
+      menuContainer.appendChild(itemDiv);
+    });
+  }
+
+  categoryButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      categoryButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderMenu(btn.getAttribute('data-category'));
+    });
+  });
+
+  placeOrderBtn.addEventListener('click', () => {
+    const checkboxes = document.querySelectorAll('.select-checkbox:checked');
+    if(checkboxes.length === 0) {
+      alert('Please select at least one item to order.');
+      return;
+    }
+    selectedItems = [];
+    checkboxes.forEach(cb => {
+      const id = parseInt(cb.getAttribute('data-id'));
+      const item = menuItems.find(i => i.id === id);
+      if (item) selectedItems.push(item);
+    });
+
+    // Play order sound
+    orderSound.play();
+
+    // Show preparation section with animation
+    menuSection.classList.add('hidden');
+    preparationSection.classList.remove('hidden');
+
+    // After 3 seconds, transition to meal served
+    setTimeout(() => {
+      preparationSection.classList.add('hidden');
+      mealServedSection.classList.remove('hidden');
+    }, 3000);
+  });
+
+  payBillBtn.addEventListener('click', () => {
+    mealServedSection.classList.add('hidden');
+    paymentSection.classList.remove('hidden');
+    displayOrderSummary();
+  });
+
+  payBtn.addEventListener('click', () => {
+    paymentSound.play();
+    alert('Payment successful! Thank you.');
+    paymentSection.classList.add('hidden');
+    ratingSection.classList.remove('hidden');
+  });
+
+  submitRatingBtn.addEventListener('click', () => {
+    const rating = ratingSelect.value;
+    if (!rating) {
+      alert('Please select a rating before submitting.');
+      return;
+    }
+    ratingSection.classList.add('hidden');
+    dialogue.innerHTML = `
+      <p><strong>Manager:</strong> Thank you for dining with us and your rating of ${rating} star${rating > 1 ? 's' : ''}!</p>
+      <p><strong>Waiter:</strong> Please visit us again. Have a wonderful day!</p>
+    `;
+    finalMessage.classList.remove('hidden');
+    finalMessage.textContent = 'Thank you for visiting Delicious Bites! 🍽️';
+  });
+
+  function displayOrderSummary() {
+    let total = 0;
+    let html = '<h3>Your Order Summary:</h3><ul>';
+    selectedItems.forEach(item => {
+      html += `<li>${item.name} - $${item.price.toFixed(2)}</li>`;
+      total += item.price;
+    });
+    html += `</ul><p><strong>Total: $${total.toFixed(2)}</strong></p>`;
+    orderSummary.innerHTML = html;
+  }
+
+  // Initial render
+  renderMenu();
+</script>
+</body>
+</html>
