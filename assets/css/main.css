@@ -8,12 +8,12 @@
 
 /* Global Colors - The following color variables are used throughout the website. Updating them here will change the color scheme of the entire website */
 :root { 
-  --background-color: #ffffff; /* Background color for the entire website, including individual sections */
-  --default-color: #272829; /* Default color used for the majority of the text content across the entire website */
-  --heading-color: #050d18; /* Color for headings, subheadings and title throughout the website */
-  --accent-color: #149ddd; /* Accent color that represents your brand on the website. It's used for buttons, links, and other elements that need to stand out */
-  --surface-color: #ffffff; /* The surface color is used as a background of boxed elements within sections, such as cards, icon boxes, or other elements that require a visual separation from the global background. */
-  --contrast-color: #ffffff; /* Contrast color for text, ensuring readability against backgrounds of accent, heading, or default colors. */
+  --background-color: #070b13; /* Deep space dark background */
+  --default-color: #cbd5e1; /* Clean readable light slate text */
+  --heading-color: #ffffff; /* Crisp white headings */
+  --accent-color: #00f0ff; /* Electric cyan accent */
+  --surface-color: #0e1626; /* Glassmorphic surface cards */
+  --contrast-color: #ffffff; /* High contrast text */
 }
 
 /* Nav Menu Colors - The following color variables are used specifically for the navigation menu. They are separate from the global colors to allow for more customization options */
@@ -541,7 +541,7 @@ section,
   justify-content: center;
 }
 
-.hero img {
+.hero .hero-bg-legacy {
   position: absolute;
   inset: 0;
   display: block;
@@ -549,14 +549,6 @@ section,
   height: 100%;
   object-fit: cover;
   z-index: 1;
-}
-
-.hero:before {
-  content: "";
-  background: color-mix(in srgb, var(--background-color), transparent 70%);
-  position: absolute;
-  inset: 0;
-  z-index: 2;
 }
 
 .hero .container {
