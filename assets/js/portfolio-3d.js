@@ -351,6 +351,12 @@ function initMiniChatbot() {
         🎓 <strong>Top 5 Rank in College Academics</strong> at University of Allahabad.`;
     }
 
+    if (q.includes('experience') || q.includes('lead') || q.includes('president') || q.includes('hacksquad') || q.includes('pydata') || q.includes('cmp') || q.includes('community')) {
+      return `🌟 <strong>Leadership &amp; Community Experience:</strong><br>
+        • <strong>Club President &amp; Lead</strong> — <strong>CMP HackSquad</strong> (Official Tech Community of CMP Degree College, Univ. of Allahabad). Directing hackathons, coding workshops, and developer sprints.<br>
+        • <strong>Co-Organizer</strong> — <strong>PyData Prayagraj</strong> (7th official PyData community in India). Co-organizing data science, machine learning, and Python developer meetups for 4+ months.`;
+    }
+
     if (q.includes('contact') || q.includes('hire') || q.includes('email') || q.includes('phone') || q.includes('location') || q.includes('intern') || q.includes('job') || q.includes('reach')) {
       return `📬 <strong>Get in Touch with Suryansh:</strong><br>
         • <strong>Location</strong>: Prayagraj, Uttar Pradesh, India<br>
@@ -360,10 +366,11 @@ function initMiniChatbot() {
         • <strong>LinkedIn</strong>: <a href="https://in.linkedin.com/in/suryansh-tripathi-5b3384242" target="_blank" style="color:var(--accent-cyan);">suryansh-tripathi</a>`;
     }
 
-    return `💡 Suryansh is a <strong>BCA + MCA (Data Science)</strong> student at <strong>University of Allahabad</strong> (Top 5 rank) specializing in Data Analytics, Machine Learning, Python, and Web Development.<br><br>
-      Feel free to ask about his <strong>projects</strong>, <strong>certifications</strong>, <strong>technical skills</strong>, or <strong>contact info</strong>!`;
+    return `💡 Suryansh is a <strong>BCA + MCA (Data Science)</strong> student at <strong>University of Allahabad</strong> (Top 5 rank), <strong>Club President of CMP HackSquad</strong>, and <strong>Co-Organizer of PyData Prayagraj</strong>.<br><br>
+      Feel free to ask about his <strong>projects</strong>, <strong>leadership experience</strong>, <strong>certifications</strong>, <strong>technical skills</strong>, or <strong>contact info</strong>!`;
   }
 }
+
 
 /* ===================================================================
    5. ADMIN PANEL SYSTEM (WITH ADD, EDIT, DELETE & STORAGE SYNC)

@@ -909,66 +909,98 @@ body {
 /* ===================================================================
    RESUME / EXPERIENCE SECTION
    =================================================================== */
-.resume-timeline {
-  position: relative;
-  padding-left: 24px;
-  border-left: 2px solid rgba(59, 130, 246, 0.2);
+.resume .resume-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 22px;
+  display: flex;
+  align-items: center;
 }
 
-.timeline-item {
+.resume-timeline-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border-glass);
+  border-radius: 18px;
+  padding: 24px;
+  margin-bottom: 22px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: var(--glow-subtle);
+  transition: all 0.35s cubic-bezier(0.165, 0.84, 0.44, 1);
   position: relative;
-  margin-bottom: 30px;
+  overflow: hidden;
 }
 
-.timeline-item:last-child {
+.resume-timeline-item:hover {
+  border-color: var(--border-glass-hover);
+  transform: translateY(-4px);
+  box-shadow: var(--glow-card-hover);
+}
+
+.resume-timeline-item h4 {
+  font-size: 17.5px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 8px;
+}
+
+.resume-period-badge {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: var(--accent-cyan);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+}
+
+.resume-org-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #cbd5e1;
+  margin-bottom: 10px;
+}
+
+.resume-highlight-tag {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: #fbbf24;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+}
+
+.resume-timeline-item p {
+  font-size: 13.5px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+
+.resume-bullets {
+  margin: 10px 0 0 0;
+  padding-left: 18px;
+  color: var(--text-muted);
+  font-size: 13.5px;
+  line-height: 1.65;
+}
+
+.resume-bullets li {
+  margin-bottom: 6px;
+}
+
+.resume-bullets li:last-child {
   margin-bottom: 0;
 }
 
-.timeline-dot {
-  position: absolute;
-  left: -31px;
-  top: 4px;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: var(--accent-blue);
-  border: 3px solid var(--bg-primary);
-  box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
-}
-
-.timeline-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-glass);
-  border-radius: 16px;
-  padding: 22px;
-  backdrop-filter: blur(12px);
-  transition: all 0.3s ease;
-}
-
-.timeline-card:hover {
-  border-color: var(--border-glass-hover);
-  transform: translateX(4px);
-}
-
-.timeline-date {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--accent-cyan);
-  margin-bottom: 4px;
-}
-
-.timeline-title {
-  font-size: 17px;
-  font-weight: 700;
-  color: #fff;
-  margin-bottom: 4px;
-}
-
-.timeline-org {
-  font-size: 13.5px;
-  color: var(--text-muted);
-  margin-bottom: 10px;
-}
 
 /* ===================================================================
    CERTIFICATIONS SECTION
