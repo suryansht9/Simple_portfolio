@@ -455,6 +455,7 @@ const defaultCerts = [
     title: 'Data Analytics Job Simulation',
     issuer: 'Deloitte Australia',
     badgeClass: 'issuer-deloitte',
+    coverImg: 'assets/img/portfolio/branding-2.jpg',
     description: 'Completed practical simulation analyzing client data, writing SQL queries, performing demographic segmentation, and presenting strategic data findings.'
   },
   {
@@ -462,6 +463,7 @@ const defaultCerts = [
     title: 'GenAI Powered Data Analytics Job Simulation',
     issuer: 'Tata Group',
     badgeClass: 'issuer-tata',
+    coverImg: 'assets/img/portfolio/branding-3.jpg',
     description: 'Explored the synergy of generative artificial intelligence and analytics to automate exploratory data analysis and generate executive insights.'
   },
   {
@@ -469,6 +471,7 @@ const defaultCerts = [
     title: 'GenAI Job Simulation',
     issuer: 'BCG (Boston Consulting)',
     badgeClass: 'issuer-bcg',
+    coverImg: 'assets/img/portfolio/books-2.jpg',
     description: 'Simulated strategic business consulting workflows, applying generative AI models to solve unstructured client problem statements.'
   },
   {
@@ -476,6 +479,7 @@ const defaultCerts = [
     title: 'AI Foundations',
     issuer: 'OpenAI',
     badgeClass: 'issuer-openai',
+    coverImg: 'assets/img/portfolio/app-1.jpg',
     description: 'Mastered core architectural principles of modern artificial intelligence, deep learning foundations, transformer models, and ethical AI applications.'
   },
   {
@@ -483,6 +487,7 @@ const defaultCerts = [
     title: 'Introduction to Generative AI',
     issuer: 'GenAI Specialist',
     badgeClass: 'issuer-openai',
+    coverImg: 'assets/img/portfolio/app-2.jpg',
     description: 'Detailed understanding of LLM mechanisms, diffusion models, attention mechanisms, fine-tuning concepts, and conversational agent creation.'
   },
   {
@@ -490,6 +495,7 @@ const defaultCerts = [
     title: 'Python Programming for Beginners',
     issuer: 'Python Institute',
     badgeClass: 'issuer-python',
+    coverImg: 'assets/img/portfolio/product-2.jpg',
     description: 'Comprehensive mastery of core Python data structures, functional paradigms, OOP, file handling, and computational logic.'
   },
   {
@@ -497,6 +503,7 @@ const defaultCerts = [
     title: 'ChatGPT for Everyone',
     issuer: 'AI Productivity',
     badgeClass: 'issuer-deloitte',
+    coverImg: 'assets/img/portfolio/books-3.jpg',
     description: 'Effective prompt engineering techniques, iterative context prompting, workflow automation, and conversational AI productivity.'
   }
 ];
@@ -612,13 +619,31 @@ function initAdminSystem() {
     });
   });
 
+  // Helper to read image from file upload (base64 Data URL) or URL input
+  function getFormImage(fileInput, urlInput, fallbackUrl) {
+    return new Promise((resolve) => {
+      if (fileInput && fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target.result);
+        reader.onerror = () => resolve(urlInput && urlInput.value.trim() ? urlInput.value.trim() : fallbackUrl);
+        reader.readAsDataURL(fileInput.files[0]);
+      } else if (urlInput && urlInput.value.trim()) {
+        resolve(urlInput.value.trim());
+      } else {
+        resolve(fallbackUrl);
+      }
+    });
+  }
+
   // Add Project Form
   const addProjForm = document.getElementById('adminAddProjectForm');
   if (addProjForm) {
-    addProjForm.addEventListener('submit', (e) => {
+    addProjForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const title = document.getElementById('admProjTitle').value.trim();
       const category = document.getElementById('admProjCategory').value;
+      const fileInput = document.getElementById('admProjImgFile');
+      const urlInput = document.getElementById('admProjImgUrl');
       const liveUrl = document.getElementById('admProjLive').value.trim();
       const githubUrl = document.getElementById('admProjGithub').value.trim() || 'https://github.com/suryansht9';
       const tech = document.getElementById('admProjTech').value.trim();
@@ -631,6 +656,8 @@ function initAdminSystem() {
         'iot': 'Hardware & IoT'
       };
 
+      const thumbImg = await getFormImage(fileInput, urlInput, 'assets/img/portfolio/app-1.jpg');
+
       const newProject = {
         id: 'proj-' + Date.now(),
         title: title,
@@ -640,7 +667,7 @@ function initAdminSystem() {
         liveBadge: 'Live Deployed',
         liveUrl: liveUrl,
         githubUrl: githubUrl,
-        thumbImg: 'assets/img/portfolio/app-1.jpg',
+        thumbImg: thumbImg,
         description: desc,
         tags: tech.split(',').map(t => t.trim()).filter(Boolean)
       };
@@ -652,20 +679,22 @@ function initAdminSystem() {
       renderAdminProjectsList();
       addProjForm.reset();
 
-      alert(`✅ Project "${title}" added successfully to portfolio!`);
+      alert(`✅ Project "${title}" added successfully with cover image!`);
     });
   }
 
   // Edit Project Form Handler
   const editProjForm = document.getElementById('adminEditProjectForm');
   if (editProjForm) {
-    editProjForm.addEventListener('submit', (e) => {
+    editProjForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const idx = parseInt(document.getElementById('editProjIndex').value, 10);
       if (isNaN(idx) || idx < 0 || idx >= projectsState.length) return;
 
       const title = document.getElementById('editProjTitle').value.trim();
       const category = document.getElementById('editProjCategory').value;
+      const fileInput = document.getElementById('editProjImgFile');
+      const urlInput = document.getElementById('editProjImgUrl');
       const liveUrl = document.getElementById('editProjLive').value.trim();
       const githubUrl = document.getElementById('editProjGithub').value.trim();
       const tech = document.getElementById('editProjTech').value.trim();
@@ -678,9 +707,12 @@ function initAdminSystem() {
         'iot': 'Hardware & IoT'
       };
 
+      const thumbImg = await getFormImage(fileInput, urlInput, projectsState[idx].thumbImg || 'assets/img/portfolio/app-1.jpg');
+
       projectsState[idx].title = title;
       projectsState[idx].category = category;
       projectsState[idx].categoryLabel = categoryLabels[category] || category;
+      projectsState[idx].thumbImg = thumbImg;
       projectsState[idx].liveUrl = liveUrl;
       projectsState[idx].githubUrl = githubUrl;
       projectsState[idx].description = desc;
@@ -702,17 +734,22 @@ function initAdminSystem() {
   // Add Certification Form
   const addCertForm = document.getElementById('adminAddCertForm');
   if (addCertForm) {
-    addCertForm.addEventListener('submit', (e) => {
+    addCertForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const title = document.getElementById('admCertTitle').value.trim();
       const issuer = document.getElementById('admCertIssuer').value.trim();
+      const fileInput = document.getElementById('admCertImgFile');
+      const urlInput = document.getElementById('admCertImgUrl');
       const desc = document.getElementById('admCertDesc').value.trim();
+
+      const coverImg = await getFormImage(fileInput, urlInput, 'assets/img/portfolio/branding-2.jpg');
 
       const newCert = {
         id: 'cert-' + Date.now(),
         title: title,
         issuer: issuer,
         badgeClass: 'issuer-deloitte',
+        coverImg: coverImg,
         description: desc
       };
 
@@ -723,24 +760,29 @@ function initAdminSystem() {
       renderAdminCertsList();
       addCertForm.reset();
 
-      alert(`✅ Certification "${title}" added successfully!`);
+      alert(`✅ Certification "${title}" added successfully with cover image!`);
     });
   }
 
   // Edit Certification Form Handler
   const editCertForm = document.getElementById('adminEditCertForm');
   if (editCertForm) {
-    editCertForm.addEventListener('submit', (e) => {
+    editCertForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const idx = parseInt(document.getElementById('editCertIndex').value, 10);
       if (isNaN(idx) || idx < 0 || idx >= certsState.length) return;
 
       const title = document.getElementById('editCertTitle').value.trim();
       const issuer = document.getElementById('editCertIssuer').value.trim();
+      const fileInput = document.getElementById('editCertImgFile');
+      const urlInput = document.getElementById('editCertImgUrl');
       const desc = document.getElementById('editCertDesc').value.trim();
+
+      const coverImg = await getFormImage(fileInput, urlInput, certsState[idx].coverImg || 'assets/img/portfolio/branding-2.jpg');
 
       certsState[idx].title = title;
       certsState[idx].issuer = issuer;
+      certsState[idx].coverImg = coverImg;
       certsState[idx].description = desc;
 
       localStorage.setItem(STORAGE_CERTS, JSON.stringify(certsState));
@@ -755,6 +797,7 @@ function initAdminSystem() {
       alert(`✅ Certification "${title}" updated successfully!`);
     });
   }
+
 
   // Change Password
   const changePassForm = document.getElementById('adminChangePassForm');
@@ -1039,8 +1082,15 @@ function renderPortfolioCertifications(certs) {
     colDiv.className = 'col-lg-4 col-md-6';
     colDiv.setAttribute('data-aos', 'fade-up');
 
+    const coverHtml = cert.coverImg ? `
+      <div class="cert-cover-wrapper">
+        <img src="${cert.coverImg}" class="cert-cover-img" alt="${cert.title}">
+      </div>
+    ` : '';
+
     colDiv.innerHTML = `
       <div class="cert-card-3d" data-tilt>
+        ${coverHtml}
         <div class="cert-top-row">
           <span class="cert-issuer-badge ${cert.badgeClass || 'issuer-deloitte'}">${cert.issuer}</span>
           <i class="bi bi-patch-check-fill cert-verify-icon"></i>
@@ -1054,6 +1104,7 @@ function renderPortfolioCertifications(certs) {
 
   initVanillaTiltCards();
 }
+
 
 /* ===================================================================
    6. PROJECT DETAILS MODAL CONTROLLER
